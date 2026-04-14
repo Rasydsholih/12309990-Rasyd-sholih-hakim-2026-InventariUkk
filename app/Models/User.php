@@ -42,5 +42,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
+    public function lendings()
+    {
+        return $this->hasMany(lendings::class, 'edited_by');
+    }
 }

@@ -30,5 +30,8 @@ class Item extends Model
     /**
      * Relationship dengan Lending
      */
-
+    public function lendings()
+    {
+        return $this->hasMany(Lendings::class, 'item_id', 'id');
+    }
 }

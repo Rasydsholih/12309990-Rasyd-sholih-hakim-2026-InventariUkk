@@ -17,7 +17,17 @@ class ItemsController extends Controller
 
         $items = \App\Models\Item::with([
             'category',
+            'lendings' => function ($q) {
+                $q->where('returned', false);
+            }
         ])
+        ->withSum(['lendings as lending_total' => function ($q) {
+            $q->where('returned', false);
+        }], 'total') 
+
+        ->withCount(['lendings as lending_count' => function ($q) {
+            $q->where('returned', false);
+        }])
 
         ->get();
 

@@ -37,11 +37,11 @@
     <div class="text-center">
 
         <!-- GANTI GAMBAR DI SINI -->
-        <img src="#" alt="404"  width="900" class="error-img mb-4">
+        <img src="storage/assets/images/404.png" alt="404"  width="900" class="error-img mb-4">
 
         <h4 class="fw-semibold mb-3">You can't access this page.</h4>
 
-        <a href="/" class="btn btn-back">
+        <a href="{{ route('inventaris.index') }}" class="btn btn-back">
             Back
         </a>
 

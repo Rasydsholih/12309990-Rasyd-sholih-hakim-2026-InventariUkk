@@ -153,15 +153,15 @@
 </div>
 
 <div class="table-data">
-    <h4>Admin Accounts Table</h4>
-    <span>Add,delete,update .Admin Accounts</span>
+    <h4>Operator Accounts Table</h4>
+    <span>Add,delete,update Operator Accounts</span>
     @if(session('password'))
-        <script>
-            alert("User berhasil dibuat!\nPassword: {{ session('password') }}");
-        </script>
+    <script>
+        alert("Password baru: {{ session('password') }}");
+    </script>
     @endif
     <div class="text-end">
-        <a href="#" class="btn btn-sm btn-success">
+        <a href="{{ route('users.export') }}" class="btn btn-sm btn-success">
             <i class="bi bi-file-earmark-excel"></i> Export Excel
         </a>
         <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Add</a>
@@ -182,7 +182,10 @@
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
-                    <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ route('users.reset-password', $user) }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-warning">Reset Password</button>
+                    </form>
                     <form action="{{ route('users.destroy', $user) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')

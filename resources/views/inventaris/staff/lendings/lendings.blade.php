@@ -2,6 +2,7 @@
 
 @section('content')
 
+
 <style>
 
     .header {
@@ -11,8 +12,8 @@
         position: relative;
         color: white;
         padding: 20px;
-        border-radius: 20px; /* tambahkan ini */
-        overflow: hidden; /* penting biar gambar ikut radius */
+        border-radius: 20px;
+        overflow: hidden; 
     }
 
     .header-overlay {
@@ -41,14 +42,14 @@
         right: 20px;
         top: 20px;
     }
-    /* CARD INFO */
+    
     .info-card {
         margin-top: -30px;
         background: #e9ecef;
         border-radius: 5px;
         padding: 15px 20px;
     }
-    /* PROFILE DROPDOWN */
+    
     .profile-box {
         position: relative;
         cursor: pointer;
@@ -72,7 +73,7 @@
     .dropdown-custom a:hover {
         background: #f1f1f1;
     }
-    /* TABLE STYLES */
+    
     .table-data {
         margin-top: 20px;
         padding: 20px;
@@ -104,6 +105,8 @@
 </style>
 
 
+
+
 <!-- HEADER -->
 <div class="header">
     <div class="header-overlay"></div>
@@ -112,7 +115,7 @@
         <!-- MENU ICON -->
         <i class="bi bi-list menu-icon"></i>
 
-        <!-- LOGO (GANTI SENDIRI) -->
+        <!-- LOGO -->
         <img src="{{ asset('storage/assets/images/wk-icon.png') }}" alt="Logo" width="50" class="mb-2">
 
         <!-- TEXT -->
@@ -128,18 +131,18 @@
 <!-- CONTENT -->
 <div class="container mt-4">
 
-    <!-- INFO CARD -->
+    
     <div class="info-card d-flex justify-content-between align-items-center">
 
         <span class="fw-medium">Check menu in sidebar</span>
 
-        <!-- PROFILE -->
+        
         <div class="profile-box" onclick="toggleDropdown()">
             <i class="bi bi-person-circle fs-4"></i>
             <span class="ms-2">{{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
             <i class="bi bi-chevron-down ms-1"></i>
 
-            <!-- DROPDOWN -->
+            
             <div class="dropdown-custom" id="dropdownMenu">
                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
@@ -153,43 +156,80 @@
 </div>
 
 <div class="table-data">
-    <h4>Admin Accounts Table</h4>
-    <span>Add,delete,update .Admin Accounts</span>
-    @if(session('password'))
-        <script>
-            alert("User berhasil dibuat!\nPassword: {{ session('password') }}");
-        </script>
-    @endif
+    <h4>Lendings Table</h4>
+    <span>Data Of .Lendings</span>
     <div class="text-end">
-        <a href="#" class="btn btn-sm btn-success">
+        <a href="{{ route('lendings.export') }}" class="btn btn-sm btn-success">
             <i class="bi bi-file-earmark-excel"></i> Export Excel
         </a>
-        <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Add</a>
+        <a href="{{ route('lendings.create') }}" class="btn btn-sm btn-primary">Add</a>
     </div>
     <table class="table">
         <thead>
             <tr>
                 <th>#</th>
+                <th>Item</th>
+                <th>Total</th>
                 <th>Name</th>
-                <th>Email</th>
+                <th>Ket.</th>
+                <th>Date</th>
+                <th>Returned</th>
+                <th>Edited By</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($users as $user)
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->email }}</td>
-                <td>
-                    <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('users.destroy', $user) }}" method="POST" style="display: inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
-                </td>
-            </tr>
+            @foreach ($lendings as $lending)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $lending->item->name }}</td>
+                    <td>{{ $lending->total }}</td>
+                    <td>{{ $lending->name }}</td>
+                    <td>{{ $lending->keterangan }}</td>
+                    
+                    <td>{{ \Carbon\Carbon::parse($lending->date)->format('d F, Y') }}</td>
+                    
+                    <td>
+                        @if($lending->returned)
+                            <span style="border: 1px solid #20c997; color: #20c997; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 500;">
+                                {{ \Carbon\Carbon::parse($lending->returned_date)->format('d F, Y') }}
+                            </span>
+                        @else
+                            <span style="border: 1px solid #ffc107; color: #ffc107; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 500;">
+                                not returned
+                            </span>
+                        @endif
+                    </td>
+                    
+                    <td>
+                        {{ $lending->edited_by }}
+                        
+                        @if($lending->penerima)
+                            <br>
+                            <span class="badge bg-info text-dark mt-1">
+                                Diterima oleh: {{ $lending->penerima }}
+                            </span>
+                        @endif
+                    </td>
+                    
+                    <td>
+                        @if(!$lending->returned)
+                            <form action="{{ route('lendings.return', $lending->id) }}" method="POST" style="display: inline-block;">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-sm btn-warning text-dark fw-medium" style="background-color: #ffc107; border: none; padding: 5px 15px;" onclick="return confirm('Konfirmasi pengembalian barang?')">
+                                    Returned
+                                </button>
+                            </form>
+                        @endif
+
+                        <form action="{{ route('lendings.destroy', $lending->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -201,7 +241,7 @@
         dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     }
 
-    // klik luar = tutup dropdown
+    
     window.onclick = function(e) {
         if (!e.target.closest('.profile-box')) {
             document.getElementById("dropdownMenu").style.display = "none";
@@ -212,4 +252,4 @@
 
 
 
-@endsection 
+@endsection

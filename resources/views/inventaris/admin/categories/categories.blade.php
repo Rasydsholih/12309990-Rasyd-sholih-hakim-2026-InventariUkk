@@ -120,7 +120,7 @@
 
         <!-- DATE -->
         <div class="date fw-semibold">
-            14 January, 2023
+            {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
         </div>
     </div>
 </div>

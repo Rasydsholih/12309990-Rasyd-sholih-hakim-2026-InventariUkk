@@ -5,7 +5,7 @@
 <style>
 
     .header {
-        background: url('') no-repeat center center;
+        background: url('storage/assets/images/bgDashboard.jpg') no-repeat center center;
         background-size: cover;
         height: 180px;
         position: relative;
@@ -84,14 +84,14 @@
         <i class="bi bi-list menu-icon"></i>
 
         <!-- LOGO (GANTI SENDIRI) -->
-        <img src="#" alt="Logo" width="50" class="mb-2">
+        <img src="storage/assets/images/wk-icon.png" alt="Logo" width="50" class="mb-2">
 
         <!-- TEXT -->
         <h5 class="mb-0 fw-semibold">Welcome Back, Guest Account</h5>
 
         <!-- DATE -->
         <div class="date fw-semibold">
-            14 January, 2023
+            {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
         </div>
     </div>
 </div>
@@ -112,7 +112,8 @@
 
             <!-- DROPDOWN -->
             <div class="dropdown-custom" id="dropdownMenu">
-                <form action="#" method="POST" style="margin: 0;">
+                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                    @csrf
                     <button type="submit" style="width: 100%; text-align: left; border: none; background: none; cursor: pointer; padding: 12px 15px; color: #333;">
                         <i class="bi bi-box-arrow-right me-2"></i> Logout
                     </button>

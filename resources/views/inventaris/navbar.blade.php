@@ -69,17 +69,17 @@
     <ul class="nav flex-column">
 
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ route('inventaris.index') }}">
                 <i class="bi bi-layout-sidebar icon"></i> Dashboard
             </a>
         </li>
-        
+        @if(auth()->user()->role === 'admin')
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('categories.index') }}">
                     <i class="bi bi-tags icon"></i> Categories
                 </a>
             </li>
-
+        @endif
         <div class="section-title">Items Data</div>
 
         <li class="nav-item">
@@ -88,13 +88,14 @@
             </a>
         </li>
 
-
+        @if(auth()->user()->role === 'operator')
             <li class="nav-item">
-                <a class="nav-link active" href="#">
+                <a class="nav-link active" href="{{ route('lendings.index') }}">
                     <i class="bi bi-arrow-repeat icon"></i> Lending
                 </a>
             </li>
-        
+        @endif
+
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#usersMenu" role="button">
                 <i class="bi bi-person icon"></i> Users
@@ -102,15 +103,19 @@
             </a>
 
             <ul class="collapse list-unstyled" id="usersMenu">
+                @if(auth()->user()->role === 'admin')
                     <li>
-                        <a href="#" class="nav-link">• Admin</a>
+                        <a href="{{ route('users.index') }}" class="nav-link">• Admin</a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link">• Operator</a>
+                        <a href="{{ route('users.authoperator') }}" class="nav-link">• Operator</a>
                     </li>
+                @endif
+                @if(auth()->user()->role === 'operator')
                     <li>
-                        <a href="#" class="nav-link">• Edit Profile</a>
+                        <a href="{{ route('users.edit', auth()->user()->id) }}"  class="nav-link">• Edit Profile</a>
                     </li>
+                @endif
             </ul>
         </li>
 
